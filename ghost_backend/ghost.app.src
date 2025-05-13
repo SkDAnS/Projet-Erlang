@@ -1,0 +1,16 @@
+{application, ghost,
+ [{description, "Plateforme de messagerie sociale persistante"},
+  {vsn, "0.1.0"},
+  {registered, [ghost_session]},
+  {mod, {ghost_app, []}},
+  {applications,
+   [kernel,
+    stdlib,
+    mnesia,
+    crypto
+   ]},
+  {env,[]},
+  {modules, [ghostinthethread, ghost_db, ghost_session, ghost_user, ghost_message]},
+  {licenses, ["Apache 2.0"]},
+  {links, [{"GitHub", "https://github.com/your-username/ghostinthethread"}]}
+ ]}.
