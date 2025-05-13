@@ -1,0 +1,99 @@
+===================================================================== DANS LE TERMINALE WSL DANS LE DOSSIER ghost_backend =======================================================
+
+===> initialisation OBLIGER <===
+
+erl -pa _build/default/lib/*/ebin
+
+c(ghost_db).
+c(ghost_session).
+c(ghost_user).
+c(ghost_message).
+c(ghostinthethread).
+c(ghost_app).
+c(ghost_sup).
+
+ghostinthethread:init().
+
+c(ghost_websocket_handler).
+c(ghost_websocket_server).
+
+===> LANCEMENT BACKEND POUR COMMUNICATION AVEC FRONTEND (affichage web) <===
+
+
+ghost_websocket_server:start().
+
+
+===> CONNEXION <===
+
+ghostinthethread:login("Alice", "secret123").
+
+
+
+===> DECONNEXION <===
+
+ghostinthethread:logout().
+
+
+
+===> CREE USER <===
+
+ghostinthethread:create_user("Alice", "secret123").
+
+
+
+===> Apres creation de user ou connexion au user AJOUTER MESSAGE <===
+
+ghostinthethread:add_message("", "Mon premier message!").
+
+
+
+===> LIKER <===
+
+ghostinthethread:like_message("", <NBR id DU MESSAGE>).
+
+
+
+===> UNLIKE  <===
+
+ghostinthethread:unlike_message("", <NBR id DU MESSAGE>).
+
+
+
+===> DELETE MESSAGE  <===
+
+ghostinthethread:delete_message("", <NBR id DU MESSAGE>).
+
+
+
+===> AFFICHAGE MESSAGE  <===
+
+ghostinthethread:display_all().
+
+
+
+===> REPONDRE MESSSAGE  <===
+
+ghostinthethread:reply_to_message("", <NBR id DU MESSAGE a qui tu veux repondre>, "Message reponse").
+
+
+
+
+
+
+===================================================================== DANS LE TERMINALE WSL DANS LE DOSSIER DU PROJET GENERALE Projet Erlang =======================================================
+
+
+
+===> A FAIRE UNE SEUL FOIS <===
+
+npm install
+
+===> POUR LANCEZ LE SITE WEB <===
+
+npm run dev
+
+
+
+
+
+
