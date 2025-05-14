@@ -1,4 +1,3 @@
-
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -91,23 +90,58 @@
   }
 
   body {
-    @apply bg-ghost-bg text-ghost-text;
+    @apply bg-white text-black font-mono;
+    background-image: linear-gradient(#e8e8e8 1px, transparent 1px), linear-gradient(to right, #e8e8e8 1px, transparent 1px);
+    background-size: 50px 50px;
   }
 
   /* Ghost thread custom styles */
-  .message-thread {
-    @apply border-l-2 border-ghost-secondary pl-4 my-3;
+  .grid-background {
+    position: relative;
+    z-index: 0;
+  }
+
+  .logo {
+    @apply relative inline-block;
+  }
+
+  .logo svg {
+    @apply h-24 w-24;
+  }
+
+  .title-text {
+    @apply text-6xl md:text-8xl font-bold tracking-tighter;
+  }
+
+  .subtitle-ribbon {
+    @apply bg-black text-white px-6 py-1 transform rotate-3 inline-block;
+  }
+
+  .user-pill {
+    @apply border-2 border-black rounded-full px-6 py-1 flex items-center gap-2 transition-all hover:bg-black hover:text-white;
+  }
+
+  .user-pill-active {
+    @apply bg-black text-white;
+  }
+
+  .plus-icon {
+    @apply text-xl font-bold;
   }
 
   .message {
-    @apply bg-ghost-dark rounded-lg p-4 mb-3 animate-fade-in;
+    @apply bg-white border-2 border-black p-4 rounded-lg mb-3;
+  }
+
+  .message-header {
+    @apply flex justify-between items-center border-b border-gray-200 pb-2 mb-2;
   }
 
   .reply {
-    @apply bg-ghost-dark/70 rounded-lg p-3 mt-2 ml-6 border-l-2 border-ghost-tertiary;
+    @apply bg-white border border-black rounded-lg p-3 mt-2 ml-6 mb-2;
   }
 
   .live-indicator {
-    @apply inline-block h-2 w-2 rounded-full bg-green-500 mr-2 animate-pulse-light;
+    @apply inline-block h-2 w-2 rounded-full bg-black mr-2;
   }
 }

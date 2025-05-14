@@ -27,28 +27,28 @@ const UserStatus: React.FC = () => {
   }, []);
 
   return (
-    <div className="flex items-center space-x-2 bg-ghost-dark p-2 rounded-lg">
-      <div className="flex items-center">
-        <span className={`w-2 h-2 rounded-full ${connectionStatus === 'connected' ? 'bg-green-500' : 'bg-red-500'} mr-1`}></span>
-        <span className="text-sm text-blue-500">Live Mnesia</span>
-      </div>
-
-      {/* Badge avec texte qui change en fonction du statut de la connexion */}
-      <Badge 
-        variant="outline" 
-        className={`text-sm ${connectionStatus === 'connected' ? 'bg-green-500 text-white' : 'bg-red-500 text-ghost-text/70'}`}
+  <div className="host-dark p-2 rounded-lg">
+    <div className="border-2 border-black p-2 inline-flex items-center gap-2 font-mono">
+      <span className={`w-2 h-2 rounded-full ${connectionStatus === 'connected' ? 'bg-green-500' : 'bg-red-500'} mr-1`}></span>
+      <span className="text-sm text-black">Live Mnesia</span>
+      {/* Texte et badge du statut de connexion dans le même rectangle */}
+      <span 
+        className={`text-sm ml-2 ${connectionStatus === 'connected' ? 'text-green-500' : 'text-red-500'}`}
       >
         {connectionStatus === 'connected' ? 'Connected' : 'Not connected'}
-      </Badge>
+      </span>
+    
 
-      {/* Affichage du badge avec pseudo si l'utilisateur est connecté */}
-      {session.loggedIn && connectionStatus === 'connected' && (
-        <Badge variant="outline" className="bg-ghost-primary text-ghost-text border border-gray-300 rounded-md">
-          Viewing as {session.pseudo}
-        </Badge>
-      )}
+    {/* Affichage du badge avec pseudo si l'utilisateur est connecté */}
+    {session.loggedIn && connectionStatus === 'connected' && (
+      <Badge variant="outline" className="bg-ghost-dark text-ghost-text/70">
+        Affichage en tant que {session.pseudo}
+      </Badge>
+    )}
     </div>
-  );
+  </div>
+);
+
 };
 
 export default UserStatus;

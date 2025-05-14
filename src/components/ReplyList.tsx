@@ -11,16 +11,15 @@ const ReplyList: React.FC<ReplyListProps> = ({ replies }) => {
   }
 
   return (
-    <div className="mt-2 border-t border-gray-300 pt-2">
-      <h4 className="text-sm text-gray-700 mb-2">Réponses:</h4>
+    <div className="mt-2 border-t border-gray-200 pt-2">
+      <h4 className="text-sm mb-2 font-bold">Réponses:</h4>
       {replies.map((reply) => (
-        <div key={reply.id} className="reply ml-4 mb-2 p-2 bg-white rounded shadow-sm">
+        <div key={reply.id} className="reply">
           <div className="flex justify-between items-center mb-1">
-            <span className="font-medium text-black">{reply.pseudo}</span>
-            <span className="text-xs text-gray-500">ID: {reply.id}</span>
+            <span className="font-bold">{reply.pseudo}</span>
+            <span className="text-xs">ID: {reply.id}</span>
           </div>
-          {/* Texte du message décalé à gauche avec couleur gris foncé */}
-          <p className="text-sm text-gray-700 ml-4">{reply.text}</p>
+          <p className="text-sm">{reply.text}</p>
         </div>
       ))}
     </div>

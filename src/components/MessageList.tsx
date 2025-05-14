@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Message as MessageType, mnesiaService } from '../lib/mnesia';
 import Message from './Message';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { toast } from "sonner";
 
 const MessageList: React.FC = () => {
@@ -9,19 +8,19 @@ const MessageList: React.FC = () => {
   const [loading, setLoading] = useState<boolean>(true);
 
   useEffect(() => {
-    // S'abonner aux mises à jour des messages
+    // Subscribe to message updates
     const unsubscribe = mnesiaService.subscribeToMessages((newMessages) => {
       setMessages(newMessages);
       setLoading(false);
     });
     
-    // Démarrer le polling pour les mises à jour
+    // Start polling for updates
     mnesiaService.startPolling();
     
-    // Afficher une notification de connexion
+    // Show connection toast
     toast.info("Connexion à la base de données Mnesia...");
     
-    // Nettoyer l'abonnement et le polling lors du démontage du composant
+    // Clean up subscription and polling on unmount
     return () => {
       unsubscribe();
       mnesiaService.stopPolling();
@@ -29,26 +28,25 @@ const MessageList: React.FC = () => {
   }, []);
 
   return (
-    <Card className="bg-blue-50 border-gray-300">
-      <CardHeader>
-        <CardTitle className="text-black">Messages Actuels</CardTitle>
-      </CardHeader>
-      <CardContent>
-        {loading ? (
-          <div className="text-center py-8 text-gray-500">
-            Connexion à la base de données Mnesia...
-          </div>
-        ) : messages.length === 0 ? (
-          <div className="text-center py-8 text-gray-500">
-            Aucun message disponible dans Mnesia
-          </div>
-        ) : (
-          messages.map((message) => (
-            <Message key={message.id} message={message} />
-          ))
-        )}
-      </CardContent>
-    </Card>
+    <div className="border-2 border-black p-4 bg-white">
+      <div className="border-b-2 border-black mb-4 pb-2">
+        <h2 className="text-xl font-bold tracking-tight">Messages</h2>
+      </div>
+      
+      {loading ? (
+        <div className="text-center py-8 text-black/70">
+          Connexion à la base de données Mnesia...
+        </div>
+      ) : messages.length === 0 ? (
+        <div className="text-center py-8 text-black/70">
+          Aucun message disponible en Mnésie
+        </div>
+      ) : (
+        messages.map((message) => (
+          <Message key={message.id} message={message} />
+        ))
+      )}
+    </div>
   );
 };
 
