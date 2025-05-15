@@ -164,14 +164,15 @@ delete_reply(UserId, ParentId, ReplyId) ->
 %%% AFFICHAGE DES MESSAGES
 %%%---------------------------
 display_all() ->
+    ghost_db:init(),
     case mnesia:transaction(fun() -> mnesia:match_object(#ghost_thread_table{_ = '_'}) end) of
         {atomic, Messages} ->
             SortedMessages = lists:sort(fun(A, B) -> A#ghost_thread_table.id < B#ghost_thread_table.id end, Messages),
             case SortedMessages of
                 [] ->
-                    io:format("~nAucun message à afficher.~n");
+                    {ok, "Aucun message à afficher.\n"};
                 _ ->
-                    lists:foreach(
+                    Lines = lists:map(
                         fun(#ghost_thread_table{
                             id = Id,
                             user_id = Uid,
@@ -180,28 +181,29 @@ display_all() ->
                             replies = Replies
                         }) ->
                             Pseudo = ghost_user:get_pseudo_by_id(Uid),
-                            io:format("~n~s [~p] (ID: ~p):~n", [Pseudo, Uid, Id]),
-                            io:format("| ~s~n", [Txt]),
-                            io:format("| ❤️\tLIKES: ~p~n", [length(Likes)]),
-                            print_replies(Replies)
+                            Header = io_lib:format("\n~s [~p] (ID: ~p):\n", [Pseudo, Uid, Id]),
+                            Body = io_lib:format("| ~s\n| LIKES: ~p\n", [Txt, length(Likes)]),
+                            ReplyText = print_replies_to_string(Replies),
+                            lists:flatten([Header, Body, ReplyText])
                         end,
                         SortedMessages
-                    )
+                    ),
+                    {ok, lists:flatten(Lines)}
             end;
         {aborted, Reason} ->
-            io:format("Transaction aborted: ~p~n", [Reason])
+            {error, Reason}
     end.
 
-print_replies([]) -> ok;
-print_replies(Replies) ->
-    io:format("|~n"),
-    lists:foreach(
-        fun(#ghost_thread_table{id = RId, user_id = RUid, text = RTxt}) ->
-            Pseudo = ghost_user:get_pseudo_by_id(RUid),
-            io:format("|_____ [Réponse ID: ~p] ~s: ~s~n", [RId, Pseudo, RTxt])
-        end,
-        Replies
-    ).
+print_replies_to_string([]) -> "";
+print_replies_to_string(Replies) ->
+    lists:flatten([
+        io_lib:format("|~n", []) ++
+        lists:map(fun(#ghost_thread_table{id = RId, user_id = RUid, text = RTxt}) ->
+            RPseudo = ghost_user:get_pseudo_by_id(RUid),
+            io_lib:format("|_____ [Réponse ID: ~p] ~s: ~s~n", [RId, RPseudo, RTxt])
+        end, Replies)
+    ]).
+
 
 %%%---------------------------
 %%% FONCTION DEBUG

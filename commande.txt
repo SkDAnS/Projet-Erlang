@@ -1,8 +1,9 @@
-===================================================================== DANS LE TERMINALE WSL DANS LE DOSSIER ghost_backend =======================================================
+%%% ===========================
+%%% INITIALISATION (OBLIGATOIRE)
+%%% Dans le terminal WSL, dossier ghost_backend
+%%% ===========================
 
-===> initialisation OBLIGER <===
-
-erl -pa _build/default/lib/*/ebin
+erl -pa _build/default/lib/*/ebin.
 
 c(ghost_db).
 c(ghost_session).
@@ -17,83 +18,118 @@ ghostinthethread:init().
 c(ghost_websocket_handler).
 c(ghost_websocket_server).
 
-===> LANCEMENT BACKEND POUR COMMUNICATION AVEC FRONTEND (affichage web) <===
-
+%%% ===========================
+%%% LANCEMENT BACKEND POUR COMMUNICATION AVEC LE FRONTEND (affichage web)
+%%% ===========================
 
 ghost_websocket_server:start().
 
-
-===> CONNEXION <===
+%%% ===========================
+%%% CONNEXION
+%%% ===========================
 
 ghostinthethread:login("Alice", "secret123").
 
-
-
-===> DECONNEXION <===
+%%% ===========================
+%%% DÉCONNEXION
+%%% ===========================
 
 ghostinthethread:logout().
 
-
-
-===> CREE USER <===
+%%% ===========================
+%%% CRÉER UN UTILISATEUR
+%%% ===========================
 
 ghostinthethread:create_user("Alice", "secret123").
 
-
-
-===> Apres creation de user ou connexion au user AJOUTER MESSAGE <===
+%%% ===========================
+%%% AJOUTER UN MESSAGE (après création ou connexion)
+%%% ===========================
 
 ghostinthethread:add_message("", "Mon premier message!").
 
+%%% ===========================
+%%% LIKER UN MESSAGE
+%%% Remplace <ID_MESSAGE> par le numéro id du message
+%%% ===========================
 
+ghostinthethread:like_message("", <ID_MESSAGE>).
 
-===> LIKER <===
+%%% ===========================
+%%% UNLIKE (retirer un like)
+%%% ===========================
 
-ghostinthethread:like_message("", <NBR id DU MESSAGE>).
+ghostinthethread:unlike_message("", <ID_MESSAGE>).
 
+%%% ===========================
+%%% SUPPRIMER UN MESSAGE
+%%% ===========================
 
+ghostinthethread:delete_message("", <ID_MESSAGE>).
 
-===> UNLIKE  <===
-
-ghostinthethread:unlike_message("", <NBR id DU MESSAGE>).
-
-
-
-===> DELETE MESSAGE  <===
-
-ghostinthethread:delete_message("", <NBR id DU MESSAGE>).
-
-
-
-===> AFFICHAGE MESSAGE  <===
+%%% ===========================
+%%% AFFICHER TOUS LES MESSAGES
+%%% ===========================
 
 ghostinthethread:display_all().
 
+%%% ===========================
+%%% RÉPONDRE À UN MESSAGE
+%%% ===========================
+
+ghostinthethread:reply_to_message("", <ID_MESSAGE>, "Message réponse").
 
 
-===> REPONDRE MESSSAGE  <===
+%%% ===========================
+%%% COMMANDES POUR LE PROJET GÉNÉRAL (npm)
+%%% À lancer dans le dossier racine du projet (hors Erlang shell)
+%%% ===========================
 
-ghostinthethread:reply_to_message("", <NBR id DU MESSAGE a qui tu veux repondre>, "Message reponse").
-
-
-
-
-
-
-===================================================================== DANS LE TERMINALE WSL DANS LE DOSSIER DU PROJET GENERALE Projet Erlang =======================================================
+% npm install
+% npm run dev
 
 
+%%% ===========================
+%%% SERVEUR TCP (Erlang shell)
+%%% ===========================
 
-===> A FAIRE UNE SEUL FOIS <===
+erlc *.erl.
+erl.
 
-npm install
+ghost_tcp_server:start().
 
-===> POUR LANCEZ LE SITE WEB <===
+%%% ===========================
+%%% CLIENT 1 TCP (Erlang shell)
+%%% ===========================
 
-npm run dev
+c(ghost_tcp_client).
+
+ghost_tcp_client:start_session().
+
+%%% Ensuite dans la session interactive du client 1, taper :
+
+% create_user,user1,pass1
+% login,user1,pass1
+% add,user1,Bonjour tout le monde !
+% display
+% logout
+% exit
 
 
+%%% ===========================
+%%% CLIENT 2 TCP (Erlang shell)
+%%% ===========================
 
+c(ghost_tcp_client).
 
+ghost_tcp_client:start_session().
 
+%%% Ensuite dans la session interactive du client 2, taper :
 
+% create_user,user2,pass2
+% login,user2,pass2
+% reply,1,Salut user1, bienvenue !
+% like,1
+% display
+% logout
+% exit

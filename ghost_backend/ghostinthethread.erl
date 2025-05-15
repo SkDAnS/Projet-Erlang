@@ -1,7 +1,7 @@
-%%%===================================================================
-%%% MODULE: ghostinthethread
-%%% DESCRIPTION: Module principal de la plateforme de messagerie sociale
-%%%===================================================================
+%===================================================================
+% MODULE: ghostinthethread
+% DESCRIPTION: Module principal de la plateforme de messagerie sociale
+%===================================================================
 
 -module(ghostinthethread).
 
@@ -9,14 +9,15 @@
     init/0, stop/0, add_message/2, reply_to_message/3, like_message/2, unlike_message/2,
     delete_message/2, delete_reply/3, display_all/0, get_all_messages_json/0,
     debug_table/0, add_test_message/0,
-    create_user/2, login/2, logout/0
+    create_user/2, login/2, logout/0,
+    get_all_messages_as_string/0
 ]).
 
 -include("ghost_records.hrl").
 
-%%%---------------------------
-%%% INITIALISATION
-%%%---------------------------
+%---------------------------
+% INITIALISATION
+%---------------------------
 init() ->
     ghost_db:init(),
     ghost_session:init_process(),
@@ -25,9 +26,9 @@ init() ->
 stop() ->
     ghost_db:stop().
 
-%%%---------------------------
-%%% GESTION DES UTILISATEURS
-%%%---------------------------
+%---------------------------
+% GESTION DES UTILISATEURS
+%---------------------------
 create_user(Pseudo, Password) ->
     ghost_user:create_user(Pseudo, Password).
 
@@ -37,9 +38,9 @@ login(Pseudo, Password) ->
 logout() ->
     ghost_user:logout().
 
-%%%---------------------------
-%%% AJOUTER UN MESSAGE
-%%%---------------------------
+%---------------------------
+% AJOUTER UN MESSAGE
+%---------------------------
 add_message(_, Text) when not is_list(Text) ->
     {error, invalid_text_format};
 add_message(_, Text) ->
@@ -54,9 +55,9 @@ add_message(_, Text) ->
             {error, not_logged_in}
     end.
 
-%%%---------------------------
-%%% RÉPONDRE À UN MESSAGE
-%%%---------------------------
+%---------------------------
+% RÉPONDRE À UN MESSAGE
+%---------------------------
 reply_to_message(_, _, Text) when not is_list(Text) ->
     {error, invalid_text_format};
 reply_to_message(_, ParentId, Text) ->
@@ -71,9 +72,9 @@ reply_to_message(_, ParentId, Text) ->
             {error, not_logged_in}
     end.
 
-%%%---------------------------
-%%% GESTION DES LIKES
-%%%---------------------------
+%---------------------------
+% GESTION DES LIKES
+%---------------------------
 like_message(_, MsgId) ->
     ghost_db:init(),
     case ghost_session:is_logged_in() of
@@ -98,9 +99,9 @@ unlike_message(_, MsgId) ->
             {error, not_logged_in}
     end.
 
-%%%---------------------------
-%%% SUPPRIMER UN MESSAGE
-%%%---------------------------
+%---------------------------
+% SUPPRIMER UN MESSAGE
+%---------------------------
 delete_message(_, MsgId) ->
     ghost_db:init(),
     case ghost_session:is_logged_in() of
@@ -113,9 +114,9 @@ delete_message(_, MsgId) ->
             {error, not_logged_in}
     end.
 
-%%%---------------------------
-%%% SUPPRIMER UNE RÉPONSE
-%%%---------------------------
+%---------------------------
+% SUPPRIMER UNE RÉPONSE
+%---------------------------
 delete_reply(_, ParentId, ReplyId) ->
     ghost_db:init(),
     case ghost_session:is_logged_in() of
@@ -128,9 +129,9 @@ delete_reply(_, ParentId, ReplyId) ->
             {error, not_logged_in}
     end.
 
-%%%---------------------------
-%%% AFFICHAGE DES MESSAGES
-%%%---------------------------
+%---------------------------
+% AFFICHAGE DES MESSAGES
+%---------------------------
 display_all() ->
     ghost_db:init(),
     case ghost_session:is_logged_in() of
@@ -142,9 +143,9 @@ display_all() ->
             {error, not_logged_in}
     end.
 
-%%%---------------------------
-%%% FONCTION DEBUG
-%%%---------------------------
+%---------------------------
+% FONCTION DEBUG
+%---------------------------
 debug_table() ->
     ghost_db:init(),
     case ghost_session:is_logged_in() of
@@ -155,9 +156,9 @@ debug_table() ->
             {error, not_logged_in}
     end.
 
-%%%---------------------------
-%%% FONCTION DE TEST
-%%%---------------------------
+%---------------------------
+% FONCTION DE TEST
+%---------------------------
 add_test_message() ->
     ghost_db:init(),
     case ghost_session:is_logged_in() of
@@ -173,9 +174,14 @@ add_test_message() ->
             {error, not_logged_in}
     end.
 
-%%%---------------------------
-%%% JSON
-%%%---------------------------
+
+% pour le client / serveur
+get_all_messages_as_string() ->
+    ghost_message:display_all().
+
+%---------------------------
+% JSON
+%---------------------------
 get_all_messages_json() ->
     ghost_db:init(),
     ghost_message:get_all_messages_json().
