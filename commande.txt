@@ -93,10 +93,10 @@ ghostinthethread:reply_to_message("", <ID_MESSAGE>, "Message réponse").
 %%% SERVEUR TCP (Erlang shell)
 %%% ===========================
 
-erlc *.erl.
-erl.
+erlc *.erl
+erl
 
-ghost_tcp_server:start().
+ghost_tcp_serveur:start().
 
 %%% ===========================
 %%% CLIENT 1 TCP (Erlang shell)
