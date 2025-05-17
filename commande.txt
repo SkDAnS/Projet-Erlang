@@ -3,7 +3,10 @@
 %%% Dans le terminal WSL, dossier ghost_backend
 %%% ===========================
 
-erl -pa _build/default/lib/*/ebin.
+rebar3 get-deps
+rebar3 compile
+rebar3 shell
+
 
 c(ghost_db).
 c(ghost_session).
