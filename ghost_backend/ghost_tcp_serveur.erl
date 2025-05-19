@@ -27,22 +27,14 @@ handle_client(Sock, SessionUser) ->
 handle_request(Sock, Data, SessionUser) ->
     case string:tokens(Data, ",") of
         ["create_user", User, Pass] ->
-            case ghostinthethread:create_user(User, Pass) of
-                {ok, _} ->
-                    gen_tcp:send(Sock, "user_created"),
-                    {true, User};
-                {error, Reason} ->
-                    gen_tcp:send(Sock, list_to_binary(io_lib:format("create_error: ~p", [Reason]))),
-                    {true, SessionUser}
+            case ghost_user:create_user(User, Pass) of
+                {ok, _} -> gen_tcp:send(Sock, "user_created"), {true, User};
+                {error, Reason} -> gen_tcp:send(Sock, iolist_to_binary(io_lib:format("create_error: ~p", [Reason]))), {true, SessionUser}
             end;
         ["login", User, Pass] ->
-            case ghostinthethread:login(User, Pass) of
-                ok ->
-                    gen_tcp:send(Sock, "login_success"),
-                    {true, User};
-                {error, Reason} ->
-                    gen_tcp:send(Sock, list_to_binary(io_lib:format("login_error: ~p", [Reason]))),
-                    {true, SessionUser}
+            case ghost_user:login(User, Pass) of
+                ok -> gen_tcp:send(Sock, "login_success"), {true, User};
+                {error, Reason} -> gen_tcp:send(Sock, iolist_to_binary(io_lib:format("login_error: ~p", [Reason]))), {true, SessionUser}
             end;
         ["add", Text] when SessionUser =/= undefined ->
             case ghostinthethread:add_message(SessionUser, Text) of
@@ -88,16 +80,11 @@ handle_request(Sock, Data, SessionUser) ->
             {true, SessionUser};
         ["display"] when SessionUser =/= undefined ->
             case ghostinthethread:get_all_messages_as_string() of
-                {ok, MsgStr} ->
-                    gen_tcp:send(Sock, iolist_to_binary(MsgStr));
-                {error, Reason} ->
-                    gen_tcp:send(
-                        Sock, iolist_to_binary(io_lib:format("Erreur display: ~p~n", [Reason]))
-                    )
+                {ok, MsgStr} -> gen_tcp:send(Sock, iolist_to_binary(MsgStr));
+                {error, Reason} -> gen_tcp:send(Sock, iolist_to_binary(io_lib:format("display_error: ~p~n", [Reason])))
             end,
             {true, SessionUser};
         ["logout"] when SessionUser =/= undefined ->
-            ghostinthethread:logout(),
             gen_tcp:send(Sock, "logged_out"),
             {true, undefined};
         _ ->
