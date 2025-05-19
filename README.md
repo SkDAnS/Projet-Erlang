@@ -1,0 +1,147 @@
+%%% ===========================
+%%% INITIALISATION (OBLIGATOIRE)
+%%% Dans le terminal WSL, dossier ghost_backend
+%%% ===========================
+
+rebar3 get-deps
+rebar3 compile
+rebar3 shell
+
+
+c(ghost_db).
+c(ghost_session).
+c(ghost_user).
+c(ghost_message).
+c(ghostinthethread).
+c(ghost_app).
+c(ghost_sup).
+
+ghostinthethread:init().
+
+c(ghost_websocket_handler).
+c(ghost_websocket_server).
+
+%%% ===========================
+%%% LANCEMENT BACKEND POUR COMMUNICATION AVEC LE FRONTEND (affichage web)
+%%% ===========================
+
+ghost_websocket_server:start().
+
+%%% ===========================
+%%% CONNEXION
+%%% ===========================
+
+ghostinthethread:login("Alice", "secret123").
+
+%%% ===========================
+%%% DÉCONNEXION
+%%% ===========================
+
+ghostinthethread:logout().
+
+%%% ===========================
+%%% CRÉER UN UTILISATEUR
+%%% ===========================
+
+ghostinthethread:create_user("Alice", "secret123").
+
+%%% ===========================
+%%% AJOUTER UN MESSAGE (après création ou connexion)
+%%% ===========================
+
+ghostinthethread:add_message("", "Mon premier message!").
+
+%%% ===========================
+%%% LIKER UN MESSAGE
+%%% Remplace <ID_MESSAGE> par le numéro id du message
+%%% ===========================
+
+ghostinthethread:like_message("", <ID_MESSAGE>).
+
+%%% ===========================
+%%% UNLIKE (retirer un like)
+%%% ===========================
+
+ghostinthethread:unlike_message("", <ID_MESSAGE>).
+
+%%% ===========================
+%%% SUPPRIMER UN MESSAGE
+%%% ===========================
+
+ghostinthethread:delete_message("", <ID_MESSAGE>).
+
+%%% ===========================
+%%% AFFICHER TOUS LES MESSAGES
+%%% ===========================
+
+ghostinthethread:display_all().
+
+%%% ===========================
+%%% RÉPONDRE À UN MESSAGE
+%%% ===========================
+
+ghostinthethread:reply_to_message("", <ID_MESSAGE>, "Message réponse").
+
+
+%%% ===========================
+%%% COMMANDES POUR LE PROJET GÉNÉRAL (npm)
+%%% À lancer dans le dossier racine du projet (hors Erlang shell)
+%%% ===========================
+
+% npm install
+% npm run dev
+
+
+%%% ===========================
+%%% SERVEUR TCP (Erlang shell)
+%%% ===========================
+
+erlc *.erl
+erl
+
+ghost_tcp_serveur:start().
+
+%%% ===========================
+%%% CLIENT 1 TCP (Erlang shell)
+%%% ===========================
+
+c(ghost_tcp_client).
+
+ghost_tcp_client:start_session().
+
+%%% Ensuite dans la session interactive du client 1, taper :
+
+% create_user,user1,pass1
+% login,user1,pass1
+% add,user1,Bonjour tout le monde !
+% like
+% unlike
+% reply
+% delete
+% delete_reply
+% display
+% logout
+% exit
+
+
+%%% ===========================
+%%% CLIENT 2 TCP (Erlang shell)
+%%% ===========================
+
+c(ghost_tcp_client).
+
+ghost_tcp_client:start_session().
+
+%%% Ensuite dans la session interactive du client 2, taper :
+
+% create_user,user2,pass2
+% login,user2,pass2
+% add,user1,Bonjour tout le monde !
+% like
+% unlike
+% reply
+% delete
+% delete_reply
+% display
+% logout
+% exit
